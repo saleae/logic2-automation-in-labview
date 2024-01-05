@@ -234,12 +234,15 @@ def close_connection():
     """
     Closes the connection to the Logic 2 application.
     """
-    global manager
+    global manager, capture
     if manager is None:
         return "-1 ERROR Manager is not connected. Please establish a connection first."
 
     try:
         # Close the session and release the port
+        if capture:
+            capture.close()
+            capture = None
         if manager:
             manager.close()
             manager = None
