@@ -1,5 +1,5 @@
 # logic2-automation-in-labview
- Automated control of Logic2 software from LabVIEW
+ Automated control of Logic2 software from LabVIEW. Supports Logic 8, Logic Pro 8, and Logic Pro 16
 
 # Overview
 Demonstrates how to use Python to automate the Saleae Logic2 software.
@@ -14,7 +14,7 @@ Python 3.8, 3.9 or 3.10 with the same bitness as LabVIEW.
 2. Install the Saleae Python library using the instructions found here:
   https://saleae.github.io/logic2-automation/getting_started.html#installing-the-python-automation-api-package
 3. Be sure Automation is enabled in the Logic2 Software (Saleae link above)
-4. Load [Python_Logic2_Automation.vi]. The key parameters in the main VI is the Anaconda setup and the Saleae 'Device ID' (F4241 is the default simulated Logic Pro 16)
+4. Load [Python_Logic2_Automation.vi]. The key parameters in the main VI are the Anaconda setings and the Saleae Logic 'Device ID' (F4241 is the default simulated Logic Pro 16)
 
 # Included in this release 0.1
 Reproduction of the [saleae_example.py] shipping example.
@@ -103,10 +103,3 @@ Note: The "path to Logic2" should be replaced with the path to and name of the L
 
 
 
-
-
-
-
-
-
-Additional N
