@@ -40,10 +40,10 @@ def open_connection(ip_address, selected_port):
         manager = automation.Manager.connect(port=selected_port, address=ip_address)
         # Additional initialization steps can be added here
     except Exception as e:
-        return f"An error occurred while opening the connection: {e}"
-    return 'success'
+        return f"-1 ERROR An error occurred while opening the connection: {e}"
+    return 'Connection Successful'
 
-def device_config(enable_digital_channels, digital_sample_rate, digital_threshold_volts,enable_analog_channels, analog_sample_rate):
+def device_config(enabled_digital_channels, digital_sample_rate, digital_threshold_volts, enabled_analog_channels, analog_sample_rate):
     """
     Configures the capturing device using an established connection.
 
@@ -54,21 +54,21 @@ def device_config(enable_digital_channels, digital_sample_rate, digital_threshol
     """
     global manager, device_configuration
     if manager is None:
-        return "Manager is not connected. Please establish a connection first."
+        return "-1 ERROR Manager is not connected. Please establish a connection first."
 
     try:
         # Device configuration
         device_configuration = automation.LogicDeviceConfiguration(
-            enabled_analog_channels=enable_analog_channels,
-            enabled_digital_channels=enable_digital_channels,
-            analog_sample_rate=analog_sample_rate,
-            digital_sample_rate=digital_sample_rate,
+            enabled_analog_channels = enabled_analog_channels,
+            enabled_digital_channels = enabled_digital_channels,
+            analog_sample_rate = analog_sample_rate,
+            digital_sample_rate = digital_sample_rate,
             digital_threshold_volts=round(digital_threshold_volts, 1),
         )
 
     except Exception as e:
-        return f"An error occurred while configuring the device: {e}"
-    return 'success'
+        return f"-1 ERROR An error occurred while configuring the device: {e}"
+    return 'Device Configuration Successful'
 
 
 def capture_duration_config(capture_duration):
@@ -80,7 +80,7 @@ def capture_duration_config(capture_duration):
     """
     global manager, capture_configuration
     if manager is None:
-        return "Manager is not connected. Please establish a connection first."
+        return "-1 ERROR Manager is not connected. Please establish a connection first."
 
     try:
         # Record N seconds of data before stopping the capture
@@ -89,8 +89,8 @@ def capture_duration_config(capture_duration):
         )
 
     except Exception as e:
-        return f"An error occurred while configuring the capture: {e}"
-    return 'success'
+        return f"-1 ERROR An error occurred while configuring the capture: {e}"
+    return 'Capture Configured Successfully'
 
 
 def start_capture(device_id):
@@ -104,7 +104,7 @@ def start_capture(device_id):
     """
     global manager, capture, device_configuration, capture_configuraiton
     if manager is None:
-        return "Manager is not connected. Please establish a connection first."
+        return "-1 ERROR Manager is not connected. Please establish a connection first."
 
     try:
         temp_capture = manager.start_capture(
@@ -116,7 +116,7 @@ def start_capture(device_id):
         capture = temp_capture  # Assign to global variable
         return "Capture started successfully"
     except Exception as e:
-        return f"An error occurred while starting the capture: {e}"
+        return f"-1 ERROR An error occurred while starting the capture: {e}"
 
 
 
@@ -134,7 +134,7 @@ def add_spi_analyzer(label, mosi, miso, clock, enable, bits_per_transfer):
     """
     global capture, spi_analyzer
     if capture is None:
-        return "Capture session is not valid. Please start a capture first."
+        return "-1 ERROR Capture session is not valid. Please start a capture first."
 
     try:
         spi_analyzer = capture.add_analyzer('SPI', label=label, settings={
@@ -144,9 +144,9 @@ def add_spi_analyzer(label, mosi, miso, clock, enable, bits_per_transfer):
             'Enable': enable,
             'Bits per Transfer': bits_per_transfer
         })
-        return "SPI analyzer added successfully"
+        return "SPI analyzer added successfully."
     except Exception as e:
-        return f"An error occurred while adding the SPI analyzer: {e}"
+        return f"-1 ERROR An error occurred while adding the SPI analyzer: {e}"
 
 
 def export_raw_digital(output_dir, digital_channels):
@@ -159,14 +159,14 @@ def export_raw_digital(output_dir, digital_channels):
     """
     global capture
     if capture is None:
-        return "Capture no longer exists. Please capture data first."
+        return "-1 ERROR Capture no longer exists. Please capture data first."
 
     try:
            # Export raw digital data to a CSV file
         capture.export_raw_data_csv(directory=output_dir, digital_channels=digital_channels)
         return "Raw digital data successfully exported to CSV file"
     except Exception as e:
-        return f"An error occurred while exporting raw digital data to CSV: {e}"
+        return f"-1 ERROR An error occurred while exporting raw digital data to CSV: {e}"
     
 def export_raw_mixed_signal(output_dir, digital_channels, analog_channels, analog_downsample_ratio):
     """
@@ -178,14 +178,14 @@ def export_raw_mixed_signal(output_dir, digital_channels, analog_channels, analo
     """
     global capture
     if capture is None:
-        return "Capture no longer exists. Please capture data first."
+        return "-1 ERROR Capture no longer exists. Please capture data first."
 
     try:
            # Export raw digital data to a CSV file
         capture.export_raw_data_csv(directory=output_dir, digital_channels=digital_channels, analog_channels=analog_channels, analog_downsample_ratio = analog_downsample_ratio)
         return "Raw digital data successfully exported to CSV file"
     except Exception as e:
-        return f"An error occurred while exporting raw digital data to CSV: {e}"
+        return f"-1 ERROR An error occurred while exporting raw digital data to CSV: {e}"
     
 
 def export_spi_analyzer_table(output_dir):
@@ -198,7 +198,7 @@ def export_spi_analyzer_table(output_dir):
     """
     global capture, spi_analyzer
     if capture is None:
-        return "Capture no longer exists. Please capture data first."
+        return "-1 ERROR Capture no longer exists. Please capture data first."
 
     try:
         # Export analyzer data to a CSV file
@@ -209,7 +209,7 @@ def export_spi_analyzer_table(output_dir):
         )
         return "Analyzer successfully exported to CSV file"
     except Exception as e:
-        return f"An error occurred while exporting analyzer data to CSV: {e}"
+        return f"-1 ERROR An error occurred while exporting analyzer data to CSV: {e}"
 
 def export_saleae_capture(capture_filepath):
     """
@@ -220,14 +220,14 @@ def export_saleae_capture(capture_filepath):
     """
     global capture
     if capture is None:
-        return "Capture no longer exists. Please capture data first."
+        return "-1 ERROR Capture no longer exists. Please capture data first."
 
     try:
         # Finally, save the capture to a .sal file
         capture.save_capture(filepath=capture_filepath)
-        return "Analyzer successfully saved."
+        return "Analyzer data successfully saved."
     except Exception as e:
-        return f"An error occurred while exporting the capture: {e}"
+        return f"-1 ERROR An error occurred while exporting the capture: {e}"
 
 
 def close_connection():
@@ -236,7 +236,7 @@ def close_connection():
     """
     global manager
     if manager is None:
-        return "Manager is not connected. Please establish a connection first."
+        return "-1 ERROR Manager is not connected. Please establish a connection first."
 
     try:
         # Close the session and release the port
@@ -244,5 +244,5 @@ def close_connection():
             manager.close()
             manager = None
     except Exception as e:
-        return f"An error occurred whileclosing the session: {e}"
+        return f"-1 ERROR An error occurred while closing the session: {e}"
     return 'Logic2 Session Closed'
