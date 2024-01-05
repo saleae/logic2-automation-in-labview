@@ -43,7 +43,7 @@ def open_connection(ip_address, selected_port):
         return f"An error occurred while opening the connection: {e}"
     return 'success'
 
-def device_config(enable_digital_channels, digital_sample_rate, digital_threshold_volts):
+def device_config(enable_digital_channels, digital_sample_rate, digital_threshold_volts,enable_analog_channels, analog_sample_rate):
     """
     Configures the capturing device using an established connection.
 
@@ -59,7 +59,9 @@ def device_config(enable_digital_channels, digital_sample_rate, digital_threshol
     try:
         # Device configuration
         device_configuration = automation.LogicDeviceConfiguration(
+            enabled_analog_channels=enable_analog_channels,
             enabled_digital_channels=enable_digital_channels,
+            analog_sample_rate=analog_sample_rate,
             digital_sample_rate=digital_sample_rate,
             digital_threshold_volts=round(digital_threshold_volts, 1),
         )
@@ -165,6 +167,26 @@ def export_raw_digital(output_dir, digital_channels):
         return "Raw digital data successfully exported to CSV file"
     except Exception as e:
         return f"An error occurred while exporting raw digital data to CSV: {e}"
+    
+def export_raw_mixed_signal(output_dir, digital_channels, analog_channels, analog_downsample_ratio):
+    """
+    Exports the raw digital capture to a CSV file.
+
+    Args:
+        output_dir (str): File path and file name for the output CSV file.
+        digital_channels (list): List of channels to be exported.
+    """
+    global capture
+    if capture is None:
+        return "Capture no longer exists. Please capture data first."
+
+    try:
+           # Export raw digital data to a CSV file
+        capture.export_raw_data_csv(directory=output_dir, digital_channels=digital_channels, analog_channels=analog_channels, analog_downsample_ratio = analog_downsample_ratio)
+        return "Raw digital data successfully exported to CSV file"
+    except Exception as e:
+        return f"An error occurred while exporting raw digital data to CSV: {e}"
+    
 
 def export_spi_analyzer_table(output_dir):
     """
