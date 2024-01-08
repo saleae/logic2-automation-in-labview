@@ -11,6 +11,8 @@
 
 
 from saleae import automation
+import json
+from enum import Enum
 
 # INSTRUCTIONS
 # 1. Install LabVIEW, and setup an Anaconda 3 instance using Python 3.8
@@ -25,7 +27,7 @@ manager = None  # Global managing the Logic2 session
 capture = None  # Global managing the captured data
 spi_analyzer = None # Global managing the SPI Analyzer (Doing it this way limits you to 1 SPI analyzer, hope to improve. ESAL22)
 device_configuration = None # Global managing device config
-capture_configuraiton = None # Global managing capture config
+capture_configuration = None # Global managing capture config
 
 def open_connection(ip_address, selected_port):
     """
@@ -76,7 +78,7 @@ def capture_duration_config(capture_duration):
     Configures the capture, in this example it is a capture of finite duration in seconds.
 
     Args:
-        capture_duration (float): Duration of the catpure in seconds.
+        capture_duration (float): Duration of the capture in seconds.
     """
     global manager, capture_configuration
     if manager is None:
@@ -93,6 +95,68 @@ def capture_duration_config(capture_duration):
     return 'Capture Configured Successfully'
 
 
+def get_list_of_devices(include_simulation_devices):
+    """
+    Returns a list of Saleae devices.
+
+    Args:
+        include_simulation_devices (bool): If True, the return value will also include simulation devices. This can be useful for testing without a physical device
+
+    """
+    global manager, capture_configuration
+    if manager is None:
+        return "-1 ERROR Manager is not connected. Please establish a connection first."
+    
+    # Setup DeviceType is an enum
+    class DeviceType(Enum):
+        LOGIC = 1
+        LOGIC_4 = 2
+        LOGIC_8 = 3
+        LOGIC_16 = 4
+        LOGIC_PRO_8 = 5
+        LOGIC_PRO_16 = 6
+
+    # Setup DeviceDesc is a class
+    class DeviceDesc:
+        def __init__(self, device_id, device_type, is_simulation):
+            self.device_id = device_id
+            self.device_type = device_type
+            self.is_simulation = is_simulation
+
+    def to_dict(self):
+        return {
+            "device_id": self.device_id,
+            "device_type": self.device_type.name,
+            "is_simulation": self.is_simulation
+        }
+
+  
+    try:
+        # 
+        list_of_devices = manager.get_devices(
+            include_simulation_devices = include_simulation_devices
+        )
+
+        # Function to convert DeviceDesc object to a dictionary
+        def device_desc_to_dict(device):
+            return {
+                "device_id": device.device_id,
+                "device_type": device.device_type.name if isinstance(device.device_type, Enum) else device.device_type,
+                "is_simulation": device.is_simulation
+            }
+
+        # Convert each DeviceDesc object to a dictionary
+        devices_dict = [device_desc_to_dict(device) for device in list_of_devices]
+
+        # Convert the list of dictionaries to JSON
+        json_list_of_devices = json.dumps(devices_dict)
+
+        return f"{json_list_of_devices}"
+
+    except Exception as e:
+        return f"-1 ERROR An error occurred while retrieving the list of devices: {e}"
+
+
 def start_capture(device_id):
     """
     Starts a capture session using the given configurations.
@@ -102,7 +166,7 @@ def start_capture(device_id):
         device_configuration: Configuration settings for the device.
         capture_configuration: Configuration settings for the capture.
     """
-    global manager, capture, device_configuration, capture_configuraiton
+    global manager, capture, device_configuration, capture_configuration
     if manager is None:
         return "-1 ERROR Manager is not connected. Please establish a connection first."
 
