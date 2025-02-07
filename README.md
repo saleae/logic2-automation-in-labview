@@ -1,8 +1,8 @@
 # logic2-automation-in-labview
- Automated control of Logic2 software from LabVIEW. Supports Logic 8, Logic Pro 8, and Logic Pro 16
+ Automated control of Logic 2 software from LabVIEW. Supports Logic 8, Logic Pro 8, and Logic Pro 16
 
 # Overview
-Demonstrates how to use Python to automate the Saleae Logic2 software.
+Demonstrates how to use Python to automate the Saleae Logic 2 software.
     
 # Requirements 
 LabVIEW 2021 or newer
@@ -13,7 +13,7 @@ Python 3.8, 3.9 or 3.10 with the same bitness as LabVIEW.
   https://knowledge.ni.com/KnowledgeArticleDetails?id=kA00Z0000015C6tSAE&l=en-US 
 2. Install the Saleae Python library using the instructions found here:
   https://saleae.github.io/logic2-automation/getting_started.html#installing-the-python-automation-api-package
-3. Be sure Automation is enabled in the Logic2 Software (Saleae link above)
+3. Be sure Automation is enabled in the Logic 2 Software (Saleae link above)
 4. Load [Python_Logic2_Automation.vi]. The key parameters in the main VI are the Anaconda setings and the Saleae Logic 'Device ID' (F4241 is the default simulated Logic Pro 16)
 
 # Included in this release 0.1
@@ -79,7 +79,7 @@ start "" "C:\Path\To\Logic2.exe" --automation --automationHost 0.0.0.0 --automat
 Linux:
 /path/to/Logic2 --automation --automationHost 0.0.0.0 --automationPort 10430
 
-Note: The "path to Logic2" should be replaced with the path to and name of the Logic2 executable.
+Note: The "path to Logic2" should be replaced with the path to and name of the Logic 2 executable.
 
 
 
@@ -99,7 +99,7 @@ Note: The "path to Logic2" should be replaced with the path to and name of the L
 - In order to preserve the state between LabVIEW calls, several session variables are estrablished as global variables. This is generally bad programming practice and I have not had enough time to find another way to accomplish this using classes or some other method. Feedback and suggestions welcome!
 
 2. Configurations VIs and funcations are application specific.
-- Currently the configuration VIs and supporting Python functions are very specific to the example use case. This can be expanded to be more generic and thus handling more use cases. For example the 'Device Configuration' only exposes the digital parameters and not the Analog settings. Each named control and selection value in the Logic2 Graphical User Interface can be remotely controlled from the Automation software, so there is lots of room for the LabVIEW based automation library to grow!
+- Currently the configuration VIs and supporting Python functions are very specific to the example use case. This can be expanded to be more generic and thus handling more use cases. For example the 'Device Configuration' only exposes the digital parameters and not the Analog settings. Each named control and selection value in the Logic 2 Graphical User Interface can be remotely controlled from the Automation software, so there is lots of room for the LabVIEW based automation library to grow!
 
 
 
